@@ -5,6 +5,10 @@
   padding-bottom: 1rem;
   border-bottom: 1px solid #ccc;
 }
+.meal:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
 
 .meal h3 {
   margin: 0 0 0.25rem 0;

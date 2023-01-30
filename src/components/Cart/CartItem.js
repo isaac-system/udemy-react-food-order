@@ -1,4 +1,5 @@
 import classes from "./CartItem.module.css";
+import { AiOutlineClose } from "react-icons/ai";
 
 const CartItem = (props) => {
   const price = `$${props.price.toFixed(2)}`;
@@ -13,6 +14,9 @@ const CartItem = (props) => {
         </div>
       </div>
       <div className={classes.actions}>
+        <button onClick={props.onRemoveAll}>
+          <AiOutlineClose size="16" />
+        </button>
         <button onClick={props.onRemove}>−</button>
         <button onClick={props.onAdd}>+</button>
       </div>
