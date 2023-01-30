@@ -3,11 +3,11 @@ import AvailableMeals from "./AvailableMeals";
 import { Fragment } from "react";
 import ResInfomation from "./ResInfomation";
 
-const Meals = () => {
+const Meals = (props) => {
   return (
     <Fragment>
       <MealsSummary />
-      <ResInfomation />
+      <ResInfomation onShowInfo={props.onShowInfo} />
       <AvailableMeals />
     </Fragment>
   );

@@ -1,0 +1,14 @@
+.badge-orange {
+  margin-left: 1rem;
+  padding: 0.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+  border: none;
+  border-radius: 20px;
+  background-color: orange;
+  font-size: 12px;
+}
+
+.badge-orange:active,
+.badge-orange:hover {
+  background: var(--button-hover-bg-color, rgba(255, 165, 0, 0.75));
+}

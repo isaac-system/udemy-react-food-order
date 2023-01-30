@@ -1,0 +1,13 @@
+.table {
+}
+
+.table .title {
+  display: flex;
+  justify-content: space-between;
+  font-weight: bold;
+}
+
+.table .contents {
+  display: flex;
+  justify-content: space-between;
+}

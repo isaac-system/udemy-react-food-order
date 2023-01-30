@@ -1,16 +1,17 @@
 import React, { useContext } from "react";
 import CartContext from "../../store/cart-context";
+import Badge from "../UI/Badge";
 import Card from "../UI/Card";
 import classes from "./ResInfomation.module.css";
 
-const ResInfomation = () => {
+const ResInfomation = (props) => {
   const cartCtx = useContext(CartContext);
   const minOrderAmount = `$${cartCtx.orderAmount[0].orderAmount.toFixed(2)}`;
-  const deleveryAmount = `$${cartCtx.orderAmount[0].deliveryAmount.toFixed(
-    2
-  )} ~ $${cartCtx.orderAmount[
+  const deleveryAmount = `$${cartCtx.orderAmount[
     cartCtx.orderAmount.length - 1
-  ].deliveryAmount.toFixed(2)}`;
+  ].deliveryAmount.toFixed(
+    2
+  )} ~ $${cartCtx.orderAmount[0].deliveryAmount.toFixed(2)}`;
 
   return (
     <section className={classes["default-infomation"]}>
@@ -22,7 +23,16 @@ const ResInfomation = () => {
           </li>
           <li>
             <span>배달팁</span>
-            <span>{deleveryAmount}</span>
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center",
+              }}
+            >
+              <span>{deleveryAmount}</span>
+              <Badge onClick={props.onShowInfo}>자세히</Badge>
+            </div>
           </li>
         </ul>
       </Card>
