@@ -104,9 +104,7 @@ const cartReducer = (state, action) => {
   }
 
   if (action.type === "REMOVE_CART") {
-    return {
-      ...defaultCartState,
-    };
+    return defaultCartState;
   }
 
   return defaultCartState;
