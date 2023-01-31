@@ -12,22 +12,24 @@ const AvailableMeals = () => {
   useEffect(
     () => {
       const fetchMeals = async () => {
-        const response = await fetch("https://your-http-address/meals.json");
+        const mealsResponse = await fetch(
+          "https://your-http-address/meals.json"
+        );
 
-        if (!response.ok) {
+        if (!mealsResponse.ok) {
           throw new Error("Something went wrong!");
         }
 
-        const responseData = await response.json();
+        const mealsResponseData = await mealsResponse.json();
 
         const loadedMeals = [];
 
-        for (const key in responseData) {
+        for (const key in mealsResponseData) {
           loadedMeals.push({
             id: key,
-            name: responseData[key].name,
-            description: responseData[key].description,
-            price: responseData[key].price,
+            name: mealsResponseData[key].name,
+            description: mealsResponseData[key].description,
+            price: mealsResponseData[key].price,
           });
         }
 

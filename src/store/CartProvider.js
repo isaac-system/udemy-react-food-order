@@ -1,14 +1,10 @@
-import { useReducer } from "react";
+import { useEffect, useReducer } from "react";
 
 import CartContext from "./cart-context";
 
 const defaultCartState = {
   items: [],
-  orderAmount: [
-    { orderAmount: 20, deliveryAmount: 3 },
-    { orderAmount: 50, deliveryAmount: 1.5 },
-    { orderAmount: 100, deliveryAmount: 0 },
-  ],
+  orderAmount: [{ amount: 0, deliveryAmount: 0 }],
   deliveryAmount: 0,
   totalAmount: 0,
   totalOrderAmount: 0,
@@ -17,12 +13,12 @@ const defaultCartState = {
 const cartReducer = (state, action) => {
   const calDeliveryAmount = (updatedTotalAmount) => {
     let deliveryAmount = defaultCartState.deliveryAmount;
-    defaultCartState.orderAmount.forEach((item) => {
-      if (updatedTotalAmount >= item.orderAmount) {
+
+    state.orderAmount.forEach((item) => {
+      if (updatedTotalAmount >= item.amount) {
         deliveryAmount = item.deliveryAmount;
       }
     });
-
     return deliveryAmount;
   };
 
@@ -56,6 +52,13 @@ const cartReducer = (state, action) => {
       deliveryAmount: calDeliveryAmount(updatedTotalAmount),
       items: updatedItems,
       totalAmount: updatedTotalAmount,
+    };
+  }
+
+  if (action.type === "GET_INFO") {
+    return {
+      ...state,
+      orderAmount: action.data,
     };
   }
 
@@ -116,6 +119,43 @@ const CartProvider = (props) => {
     defaultCartState
   );
 
+  const getInfo = (data) => {
+    dispatchCartAction({
+      type: "GET_INFO",
+      data: data,
+    });
+  };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const Response = await fetch(
+        "https://your-http-address/orderAmount.json"
+      );
+
+      if (!Response.ok) {
+        throw new Error("Something went wrong!");
+      }
+
+      const ResponseData = await Response.json();
+
+      const loadedData = [];
+
+      for (const key in ResponseData) {
+        loadedData.push({
+          id: key,
+          amount: ResponseData[key].amount,
+          deliveryAmount: ResponseData[key].deliveryAmount,
+        });
+      }
+
+      getInfo(loadedData);
+    };
+
+    fetchData().catch((error) => {
+      console.log(error);
+    });
+  }, []);
+
   const addItemToCartHandler = (item, reference) => {
     dispatchCartAction({
       type: "ADD",
@@ -143,9 +183,10 @@ const CartProvider = (props) => {
       type: "REMOVE_CART",
     });
   };
+
   const cartContext = {
     items: cartState.items,
-    orderAmount: defaultCartState.orderAmount,
+    orderAmount: cartState.orderAmount,
     deliveryAmount: cartState.deliveryAmount,
     totalAmount: cartState.totalAmount,
     totalOrderAmount:
@@ -157,6 +198,7 @@ const CartProvider = (props) => {
     removeAllItem: removeAllItemFromCartHandler,
     removeCart: removeCartHandler,
   };
+
   return (
     <CartContext.Provider value={cartContext}>
       {props.children}

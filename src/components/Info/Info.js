@@ -14,13 +14,13 @@ const Info = (props) => {
       const item = orderObject[i];
 
       array.push(
-        <div className={classes.contents} key={item.orderAmount}>
+        <div className={classes.contents} key={item.id}>
           {orderObject.length > i + 1 ? (
-            <span>{`$${item.orderAmount.toFixed(2)} 이상 $${orderObject[
+            <span>{`$${item.amount.toFixed(2)} 이상 $${orderObject[
               i + 1
-            ].orderAmount.toFixed(2)} 미만`}</span>
+            ].amount.toFixed(2)} 미만`}</span>
           ) : (
-            <span>{`$${item.orderAmount.toFixed(2)} 이상`}</span>
+            <span>{`$${item.amount.toFixed(2)} 이상`}</span>
           )}
           <span>{`$${item.deliveryAmount.toFixed(2)}`}</span>
         </div>
@@ -28,13 +28,6 @@ const Info = (props) => {
     }
     return array;
   };
-
-  /*
-    <div className={classes.contents} key={item.orderAmount}>
-        <span>{`$ ${item.orderAmount.toFixed(2)} 이상 $ `}</span>
-        <span>{`$ ${item.deliveryAmount.toFixed(2)}`}</span>
-      </div>
-  */
 
   return (
     <Modal onClose={props.onClose}>

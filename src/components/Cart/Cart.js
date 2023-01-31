@@ -13,11 +13,11 @@ const Cart = (props) => {
   const [didSubmit, setDidSubmit] = useState(false);
   const cartCtx = useContext(CartContext);
 
-  const minOrderAmount = `$${cartCtx.orderAmount[0].orderAmount.toFixed(2)}`;
+  const minOrderAmount = `$${cartCtx.orderAmount[0].amount.toFixed(2)}`;
 
   // 최소 주문 넘었는가?
   const isMinOrderAmountOver =
-    cartCtx.totalAmount >= cartCtx.orderAmount[0].orderAmount;
+    cartCtx.totalAmount >= cartCtx.orderAmount[0].amount;
 
   // 배달비용
   const deliveryAmount = `$${cartCtx.deliveryAmount.toFixed(2)}`;

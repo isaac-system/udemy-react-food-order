@@ -6,12 +6,14 @@ import classes from "./ResInfomation.module.css";
 
 const ResInfomation = (props) => {
   const cartCtx = useContext(CartContext);
-  const minOrderAmount = `$${cartCtx.orderAmount[0].orderAmount.toFixed(2)}`;
+
   const deleveryAmount = `$${cartCtx.orderAmount[
-    cartCtx.orderAmount.length - 1
+    cartCtx?.orderAmount.length - 1
   ].deliveryAmount.toFixed(
     2
-  )} ~ $${cartCtx.orderAmount[0].deliveryAmount.toFixed(2)}`;
+  )} ~ $${cartCtx?.orderAmount[0].deliveryAmount.toFixed(2)}`;
+
+  const minOrderAmount = `$${cartCtx.orderAmount[0].amount.toFixed(2)}`;
 
   return (
     <section className={classes["default-infomation"]}>
