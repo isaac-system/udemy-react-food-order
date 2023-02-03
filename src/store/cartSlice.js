@@ -1,6 +1,5 @@
-import { useEffect, useReducer } from "react";
-
-import CartContext from "./cart-context";
+import { createSlice } from "@reduxjs/toolkit";
+import { useDispatch } from "react-redux";
 
 const defaultCartState = {
   items: [],
@@ -10,6 +9,111 @@ const defaultCartState = {
   totalOrderAmount: 0,
 };
 
+const cartSlice = createSlice({
+  name: "cart",
+  initialState: defaultCartState,
+  reducers: {
+    add(state, action) {
+      const amountType =
+        action.payload.reference === "CART" ? 1 : action.payload.item.amount;
+
+      const existingCartIndex = state.items.findIndex(
+        (item) => item.id === action.payload.item.id
+      );
+
+      const existingCartItem = state.items[existingCartIndex];
+
+      let updatedItems;
+
+      if (existingCartItem) {
+        const updatedItem = {
+          ...existingCartItem,
+          amount: existingCartItem.amount + amountType,
+        };
+        updatedItems = [...state.items];
+        updatedItems[existingCartIndex] = updatedItem;
+      } else {
+        updatedItems = state.items.concat(action.payload.item);
+      }
+
+      state.items = updatedItems;
+      state.totalAmount =
+        state.totalAmount + amountType * action.payload.item.price;
+      state.orderAmount.forEach((item) => {
+        if (state.totalAmount >= item.amount) {
+          state.deliveryAmount = item.deliveryAmount;
+        }
+      });
+      state.totalOrderAmount = state.totalAmount + state.deliveryAmount;
+    },
+    removeItem(state, action) {
+      const existingCartIndex = state.items.findIndex(
+        (item) => item.id === action.payload
+      );
+
+      const existingItem = state.items[existingCartIndex];
+      const updatedTotalAmount = state.totalAmount - existingItem.price;
+      let updatedItems;
+      if (existingItem.amount === 1) {
+        updatedItems = state.items.filter((item) => item.id !== action.payload);
+      } else {
+        const updatedItem = {
+          ...existingItem,
+          amount: existingItem.amount - 1,
+        };
+        updatedItems = [...state.items];
+        updatedItems[existingCartIndex] = updatedItem;
+      }
+
+      state.items = updatedItems;
+      state.totalAmount = updatedTotalAmount;
+      state.orderAmount.forEach((item) => {
+        if (state.totalAmount >= item.amount) {
+          state.deliveryAmount = item.deliveryAmount;
+        }
+      });
+      state.totalOrderAmount = updatedTotalAmount;
+    },
+    removeItems(state, action) {
+      const existingCartIndex = state.items.findIndex(
+        (item) => item.id === action.payload
+      );
+
+      const existingItem = state.items[existingCartIndex];
+
+      const updatedTotalAmount =
+        state.totalAmount - existingItem.amount * existingItem.price;
+
+      let updatedItems = state.items.filter(
+        (item) => item.id !== action.payload
+      );
+
+      state.items = updatedItems;
+      state.totalAmount = updatedTotalAmount;
+      state.orderAmount.forEach((item) => {
+        if (state.totalAmount >= item.amount) {
+          state.deliveryAmount = item.deliveryAmount;
+        }
+      });
+      state.totalOrderAmount = updatedTotalAmount > 0 ? updatedTotalAmount : 0;
+    },
+    removeCart(state) {
+      state.items = [];
+      state.totalAmount = 0;
+      state.totalOrderAmount = 0;
+      state.deliveryAmount = 0;
+    },
+    getInfo(state, action) {
+      state.orderAmount = action.payload;
+    },
+  },
+});
+
+export const cartActions = cartSlice.actions;
+
+export default cartSlice.reducer;
+
+/*
 const cartReducer = (state, action) => {
   const calDeliveryAmount = (updatedTotalAmount) => {
     let deliveryAmount = defaultCartState.deliveryAmount;
@@ -19,6 +123,7 @@ const cartReducer = (state, action) => {
         deliveryAmount = item.deliveryAmount;
       }
     });
+
     return deliveryAmount;
   };
 
@@ -112,7 +217,8 @@ const cartReducer = (state, action) => {
 
   return defaultCartState;
 };
-
+*/
+/*
 const CartProvider = (props) => {
   const [cartState, dispatchCartAction] = useReducer(
     cartReducer,
@@ -129,7 +235,7 @@ const CartProvider = (props) => {
   useEffect(() => {
     const fetchData = async () => {
       const Response = await fetch(
-        "https://your-http-address/orderAmount.json"
+        "https://your-firebase-address/orderAmount.json"
       );
 
       if (!Response.ok) {
@@ -205,5 +311,4 @@ const CartProvider = (props) => {
     </CartContext.Provider>
   );
 };
-
-export default CartProvider;
+*/

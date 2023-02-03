@@ -13,7 +13,7 @@ const AvailableMeals = () => {
     () => {
       const fetchMeals = async () => {
         const mealsResponse = await fetch(
-          "https://your-http-address/meals.json"
+          "https://your-firebase-address/meals.json"
         );
 
         if (!mealsResponse.ok) {

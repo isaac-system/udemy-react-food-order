@@ -1,19 +1,19 @@
-import React, { useContext } from "react";
-import CartContext from "../../store/cart-context";
+import React from "react";
+import { useSelector } from "react-redux";
+
 import Badge from "../UI/Badge";
 import Card from "../UI/Card";
 import classes from "./ResInfomation.module.css";
 
 const ResInfomation = (props) => {
-  const cartCtx = useContext(CartContext);
+  const { orderAmount } = useSelector((state) => state.cart);
 
-  const deleveryAmount = `$${cartCtx.orderAmount[
-    cartCtx?.orderAmount.length - 1
-  ].deliveryAmount.toFixed(
-    2
-  )} ~ $${cartCtx?.orderAmount[0].deliveryAmount.toFixed(2)}`;
+  const deliveryAmount = `$${orderAmount[
+    orderAmount?.length - 1
+  ]?.deliveryAmount.toFixed(2)} 
+  ~ $${orderAmount[0]?.deliveryAmount.toFixed(2)}`;
 
-  const minOrderAmount = `$${cartCtx.orderAmount[0].amount.toFixed(2)}`;
+  const minOrderAmount = `$${orderAmount[0]?.amount.toFixed(2)}`;
 
   return (
     <section className={classes["default-infomation"]}>
@@ -32,7 +32,7 @@ const ResInfomation = (props) => {
                 alignItems: "center",
               }}
             >
-              <span>{deleveryAmount}</span>
+              <span>{deliveryAmount}</span>
               <Badge onClick={props.onShowInfo}>자세히</Badge>
             </div>
           </li>

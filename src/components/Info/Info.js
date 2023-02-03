@@ -1,22 +1,21 @@
-import React, { useContext } from "react";
-import CartContext from "../../store/cart-context";
+import React from "react";
+import { useSelector } from "react-redux";
+
 import Modal from "../UI/Modal";
 import classes from "./Info.module.css";
 
 const Info = (props) => {
-  const cartCtx = useContext(CartContext);
-
-  const orderObject = cartCtx.orderAmount;
+  const { orderAmount } = useSelector((state) => state.cart);
 
   const forOrder = () => {
     let array = [];
-    for (let i = 0; i < orderObject.length; i++) {
-      const item = orderObject[i];
+    for (let i = 0; i < orderAmount.length; i++) {
+      const item = orderAmount[i];
 
       array.push(
         <div className={classes.contents} key={item.id}>
-          {orderObject.length > i + 1 ? (
-            <span>{`$${item.amount.toFixed(2)} 이상 $${orderObject[
+          {orderAmount.length > i + 1 ? (
+            <span>{`$${item.amount.toFixed(2)} 이상 $${orderAmount[
               i + 1
             ].amount.toFixed(2)} 미만`}</span>
           ) : (

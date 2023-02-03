@@ -1,47 +1,56 @@
-import React, { useContext, useState } from "react";
+import React, { useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { cartActions } from "../../store/cartSlice";
 
 import Modal from "../UI/Modal";
 import CartItem from "./CartItem";
-import CartContext from "../../store/cart-context";
-import classes from "./Cart.module.css";
 import Checkout from "./Checkout";
+
+import classes from "./Cart.module.css";
 import { AiOutlineDelete } from "react-icons/ai";
 
 const Cart = (props) => {
+  const { items, orderAmount, deliveryAmount, totalAmount, totalOrderAmount } =
+    useSelector((state) => state.cart);
+
+  const dispatch = useDispatch();
+
   const [isCheckout, setIsCheckout] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [didSubmit, setDidSubmit] = useState(false);
-  const cartCtx = useContext(CartContext);
 
-  const minOrderAmount = `$${cartCtx.orderAmount[0].amount.toFixed(2)}`;
+  //console.log(orderAmount);
+  const minOrderAmount = `$${orderAmount[0].amount.toFixed(2)}`;
 
   // 최소 주문 넘었는가?
-  const isMinOrderAmountOver =
-    cartCtx.totalAmount >= cartCtx.orderAmount[0].amount;
+  const isMinOrderAmountOver = totalAmount >= orderAmount[0].amount;
 
   // 배달비용
-  const deliveryAmount = `$${cartCtx.deliveryAmount.toFixed(2)}`;
+  //  const deliveryAmount = `$${deliveryAmount.toFixed(2)}`;
   // 주문 리스트가 있는가?
-  const hasItems = cartCtx.items.length > 0;
+  const hasItems = items.length > 0;
   // 최종 주문 금액
-  const totalOrderAmount = `$${cartCtx.totalOrderAmount.toFixed(2)}`;
 
   const cartItemRemoveHandler = (id) => {
-    cartCtx.removeItem(id);
+    //cartCtx.removeItem(id);
+    dispatch(cartActions.removeItem(id));
   };
 
   const cartAllItemRemoveHandler = (id) => {
-    cartCtx.removeAllItem(id);
+    //cartCtx.removeAllItem(id);
+    dispatch(cartActions.removeItems(id));
   };
 
   const cartRemoveHandler = () => {
     if (window.confirm("정말 모두 삭제하시겠습니까?")) {
-      cartCtx.removeCart();
+      dispatch(cartActions.removeCart());
+      //cartCtx.removeCart();
     }
   };
 
   const cartItemAddHandler = (item) => {
-    cartCtx.addItem(item, "CART");
+    dispatch(cartActions.add({ item: item, reference: "CART" }));
+    //cartCtx.addItem(item, "CART");
   };
 
   const orderHandler = () => {
@@ -50,27 +59,27 @@ const Cart = (props) => {
 
   const submitOrderHandler = async (userData) => {
     setIsSubmitting(true);
-    await fetch("https://your-http-address/orders.json", {
+    await fetch("https://your-firebase-address/orders.json", {
       method: "POST",
       body: JSON.stringify({
         user: userData,
-        orderedItems: cartCtx.items,
+        orderedItems: items,
       }),
     });
     setIsSubmitting(false);
     setDidSubmit(true);
-    cartCtx.removeCart();
+    //cartCtx.removeCart();
   };
 
-  const deliveryAmountDiv = hasItems && isMinOrderAmountOver && (
-    <div className={classes["delevery-cost"]}>
+  const deliveryAmountDiv = isMinOrderAmountOver && (
+    <div className={classes["delivery-cost"]}>
       <span>배달비용</span>
-      <span>{deliveryAmount}</span>
+      <span>${deliveryAmount.toFixed(2)}</span>
     </div>
   );
 
   const minOrderAmountDiv = !isMinOrderAmountOver && (
-    <div className={classes["delevery-cost"]}>
+    <div className={classes["delivery-cost"]}>
       <span>최소주문금액</span>
       <span>{minOrderAmount}</span>
     </div>
@@ -78,7 +87,7 @@ const Cart = (props) => {
 
   const cartItems = (
     <ul className={classes["cart-items"]}>
-      {cartCtx.items.map((item) => (
+      {items.map((item) => (
         <CartItem
           key={item.id}
           name={item.name}
@@ -97,7 +106,7 @@ const Cart = (props) => {
       <button className={classes["button--alt"]} onClick={props.onClose}>
         취소
       </button>
-      {hasItems && isMinOrderAmountOver && (
+      {isMinOrderAmountOver && (
         <button className={classes.button} onClick={orderHandler}>
           주문
         </button>
@@ -122,7 +131,7 @@ const Cart = (props) => {
 
       <div className={classes.total}>
         <span>총 비용</span>
-        <span>{totalOrderAmount}</span>
+        <span>${totalOrderAmount.toFixed(2)}</span>
       </div>
       {isCheckout && isMinOrderAmountOver && (
         <Checkout onConfirm={submitOrderHandler} onCancel={props.onClose} />
