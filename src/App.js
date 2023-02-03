@@ -55,7 +55,7 @@ function App() {
     fetchData().catch((error) => {
       console.log(error);
     });
-  }, []);
+  }, [dispatch]);
 
   return (
     <>
